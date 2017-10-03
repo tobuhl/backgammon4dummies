@@ -5,11 +5,12 @@ Python version
 ==============
 
 We will use _Python3.5.2_ and maybe an IDE _Spider3_.
+Checkstyle installation ```sudo apt install flake8```
 
 output
 ======
 
-To make the program usable (and improve testing), we will progrm a GUI. Since the board is static, the GUI will use some kind of Background picture
+To make the program usable (and improve testing), we will program a GUI. Since the board is static, the GUI will use some kind of Background picture
 
 start
 =====
@@ -29,7 +30,6 @@ Implementation
   * who is next?
   * two arrays holding the token allocation
   * method: proposed_move_valid()?
-  *
  * GUI
  * tests
  * no server-client model, but only single program.
