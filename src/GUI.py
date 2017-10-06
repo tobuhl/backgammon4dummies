@@ -80,46 +80,83 @@ class GameModeWindow(QWidget):
 
 class PlayerModeWindow(QWidget):
 
-	def __init__(self):
+	def __init__(self, complexWindow):
 		super().__init__()
 		self.title = 'Backgammon4Dummies'
 		self.left = 10
 		self.top = 10
 		self.width = 200
 		self.height = 100
+		self.complexWindow = complexWindow
 
 		self.playMode()
 
 	@pyqtSlot()	#create slot for OK
-	def okClick(self):
+	def okClickPlayerMode(self):
 		print('PyQt5 button click')
 
 	@pyqtSlot()	#create slot for cancel
-	def cancelClick(self):
+	def cancelClickPlayerMode(self):
 		print('PyQt5 button click')
 
 	def	playMode(self):
 		#main layout
-		mainLayoutLarge = QVBoxLayout()
+		mainLayoutPlayMode = QVBoxLayout()
 
 		#Player1 heading
+		if self.complexWindow == True:
+			self.boxHeading = QLabel('                            player 1')
+		else:
+			self.boxHeading = QLabel('                      player 2')
+		boxHeadingPlayer1 = QVBoxLayout()
+		boxHeadingPlayer1.addWidget(self.boxHeading)
+		
+		#text box
+		self.textbox = QLineEdit(self)
+		self.textbox.move(20, 20)
+		self.textbox.resize(280,40)
 
-		#NAME
+		group1PlayerMode = QGroupBox('What´s yout name?')
+		layoutGroup1Player = QVBoxLayout()
+		layoutGroup1Player.addWidget(self.textbox)
+		group1PlayerMode.setLayout(layoutGroup1Player)
 
 		#radiobuttons
-		self.buttonB = QRadioButton("black")
-		self.buttonB.setChecked(True)
-		self.buttonW = QRadioButton("white")
+		if self.complexWindow == True:
+			self.buttonB = QRadioButton("black")
+			self.buttonB.setChecked(True)
+			self.buttonW = QRadioButton("white")
 
-		group2PlayerMode = QGroupBox('What colour do you wanna have?')
-		layoutGroup2Player = QVBoxLayout()
-		layoutGroup2Player.addWidget(self.buttonB)
-		layoutGroup2Player.addWidget(self.buttonW)
-		group2PlayerMode.setLayout(layoutGroup2Player)
+			group2PlayerMode = QGroupBox('What colour do you wanna have?')
+			layoutGroup2Player = QVBoxLayout()
+			layoutGroup2Player.addWidget(self.buttonB)
+			layoutGroup2Player.addWidget(self.buttonW)
+			group2PlayerMode.setLayout(layoutGroup2Player)
+		else:
+			self.group2PlayerOther = QLabel('Your colour is black.')
+			player2 = QVBoxLayout()
+			player2.addWidget(self.group2PlayerOther)
 
-		mainLayoutLarge.addWidget(group2PlayerMode)	#Verschachtelung
+		#OK/Cancel button
+		okButtonPlayerMode = QPushButton('I wanna play now!', self)
+		okButtonPlayerMode.clicked.connect(self.okClickPlayerMode)
 
-		self.setLayout(mainLayoutLarge)
+		cancelButtonPlayerMode = QPushButton('Cancel', self)
+		cancelButtonPlayerMode.clicked.connect(self.cancelClickPlayerMode)
+
+		buttonLayoutPlayerMode = QHBoxLayout()
+		buttonLayoutPlayerMode.addWidget(okButtonPlayerMode)
+		buttonLayoutPlayerMode.addWidget(cancelButtonPlayerMode)
+
+		mainLayoutPlayMode.addLayout(boxHeadingPlayer1)
+		mainLayoutPlayMode.addWidget(group1PlayerMode)
+		if self.complexWindow == True:
+			mainLayoutPlayMode.addWidget(group2PlayerMode)
+		else:
+			mainLayoutPlayMode.addLayout(player2)
+		mainLayoutPlayMode.addLayout(buttonLayoutPlayerMode)
+
+		self.setLayout(mainLayoutPlayMode)
 
 		self.setGeometry(self.left, self.top, self.width, self.height)
 		self.setWindowTitle(self.title)
@@ -127,6 +164,6 @@ class PlayerModeWindow(QWidget):
 
 if __name__=='__main__':
 	application = QApplication(sys.argv)
-	win = PlayerModeWindow()
+	win = PlayerModeWindow(True)
 	sys.exit(application.exec_())
 	
