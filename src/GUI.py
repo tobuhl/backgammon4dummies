@@ -80,7 +80,7 @@ class GameModeWindow(QWidget):
 
 class PlayerModeWindow(QWidget):
 
-	def __init__(self, complexWindow):
+	def __init__(self, complexWindow, colour):
 		super().__init__()
 		self.title = 'Backgammon4Dummies'
 		self.left = 10
@@ -88,6 +88,7 @@ class PlayerModeWindow(QWidget):
 		self.width = 200
 		self.height = 100
 		self.complexWindow = complexWindow
+		self.colour = colour
 
 		self.playMode()
 
@@ -116,7 +117,7 @@ class PlayerModeWindow(QWidget):
 		self.textbox.move(20, 20)
 		self.textbox.resize(280,40)
 
-		group1PlayerMode = QGroupBox('What´s yout name?')
+		group1PlayerMode = QGroupBox('What´s your name?')
 		layoutGroup1Player = QVBoxLayout()
 		layoutGroup1Player.addWidget(self.textbox)
 		group1PlayerMode.setLayout(layoutGroup1Player)
@@ -133,7 +134,10 @@ class PlayerModeWindow(QWidget):
 			layoutGroup2Player.addWidget(self.buttonW)
 			group2PlayerMode.setLayout(layoutGroup2Player)
 		else:
-			self.group2PlayerOther = QLabel('Your colour is black.')
+			if self.colour == 'white':
+				self.group2PlayerOther = QLabel('           Your colour is black.')
+			else:
+				self.group2PlayerOther = QLabel('           Your colour is white.')
 			player2 = QVBoxLayout()
 			player2.addWidget(self.group2PlayerOther)
 
@@ -162,8 +166,59 @@ class PlayerModeWindow(QWidget):
 		self.setWindowTitle(self.title)
 		self.show()
 
+#__________________________________________________________________
+
+class WinnerWindow(QWidget):
+	def __init__(self, nameOfWinner):
+		super().__init__()
+		self.title = 'Backgammon4Dummies'
+		self.left = 10
+		self.top = 10
+		self.width = 200
+		self.height = 100
+		self.nameOfWinner = nameOfWinner
+
+		self.playMode()
+
+	@pyqtSlot()	#create slot for yes
+	def yesClick(self):
+		print('PyQt5 button click')
+
+	@pyqtSlot()	#create slot for no
+	def noClick(self):
+		print('PyQt5 button click')
+
+	def	playMode(self):
+		#main layout
+		mainLayoutWinner = QVBoxLayout()
+
+		#Winner announced
+		self.winnerAnnounced = QLabel(self.nameOfWinner + ' wins! \n Congrats. Do you wanna play again?')
+		winner = QVBoxLayout()
+		winner.addWidget(self.winnerAnnounced)
+
+		#buttons
+		yesButton = QPushButton('Yes', self)
+		yesButton.clicked.connect(self.yesClick)
+
+		noButton = QPushButton('No, thanks', self)
+		noButton.clicked.connect(self.noClick)
+
+		buttonWinnerLayout = QHBoxLayout()
+		buttonWinnerLayout.addWidget(yesButton)
+		buttonWinnerLayout.addWidget(noButton)
+
+		mainLayoutWinner.addLayout(winner)
+		mainLayoutWinner.addLayout(buttonWinnerLayout)
+
+		self.setLayout(mainLayoutWinner)
+
+		self.setGeometry(self.left, self.top, self.width, self.height)
+		self.setWindowTitle(self.title)
+		self.show()
+		
 if __name__=='__main__':
 	application = QApplication(sys.argv)
-	win = PlayerModeWindow(True)
+	win = WinnerWindow('susanne')
 	sys.exit(application.exec_())
 	
