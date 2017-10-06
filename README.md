@@ -12,6 +12,18 @@ output
 
 To make the program usable (and improve testing), we will program a GUI. Since the board is static, the GUI will use some kind of Background picture
 
+requirements
+============
+
+Packages needed for running backgammon4dummies:
+ *python3.5
+ *python3-pip
+ *sudo pip3 install pyqt5
+
+Packages needed for developement:
+ *spyder3
+ *sudo pip3 install rope_py3k  (for autocompletion in spyder)
+
 start
 =====
 
