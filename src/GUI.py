@@ -219,6 +219,6 @@ class WinnerWindow(QWidget):
 		
 if __name__=='__main__':
 	application = QApplication(sys.argv)
-	win = WinnerWindow('susanne')
+	win = PlayerModeWindow(False, 'black')
 	sys.exit(application.exec_())
 	

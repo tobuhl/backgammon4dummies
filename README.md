@@ -50,10 +50,10 @@ Design Patterns
 ===============
 
 For architecture of a software, a design pattern should be found. (controller, modell, view).
- * view
+* view
   * GUI
 * model
- * state
+  * state
 * controller
   * main
   * etc.
