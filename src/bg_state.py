@@ -1,10 +1,14 @@
-class points:
+class Points:
     def __init__(self):
         self.color = None
         self.count = 0
 
+    def setPoint(self, color, count):
+        self.color = color
+        self.count = count
 
-class move:
+
+class Move:
     def __init__(self, source, target):
         """ Represents a move: Consists of source and target """
         self.source = source
@@ -18,7 +22,7 @@ class move:
                              ", violates board boundaries" % (target))
 
 
-class player:
+class Player:
     def __init__(self, name, color):
         """
         This class represents a player
@@ -47,11 +51,11 @@ class player:
         return "%s\t%s\t%d" % (self.name, self.color, self.kicked_tokens)
 
 
-class state:
+class State:
     def __init__(self, state_array, current_player, current_opponent):
         """ This class represents the state of a backgammon game """
         if state_array is None:
-            self.tokens = [points() for x in range(25)]
+            self.tokens = [Points() for x in range(25)]
             # [[0 for y in range(2)] for x in range(25)]
             # self.tokens[1].color = 'black'  # only for testing
         else:

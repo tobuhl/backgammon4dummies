@@ -17,16 +17,22 @@ def processLoop():
     #ask user which game mode is prefered
     # PvP / player versus AI / AI versus AI
     
-    #TODO: QT 
+    p1Mode = "human"
+    p2Mode = "human"
+     
+    #ask user for player names + colors
+    p1Name = "Hans"
+    p1Color = "white"
     
-    #initialize game instance    
-    g1 = Game(3)
-    g2 = Game(4)
-    
-    #main loop
-    #TODO
+    p2Name = "Roswitha"
+    p2Color = "black"
 
-    l.log("g","processLoop(): ended")
+    #initialize game instance    
+    game = Game(p1Name,p1Color,p2Name,p2Color)
+    game.setGameMode(p1Mode,p2Mode)
+    
+    
+    l.log("g","processLoop(): killed")
 
 processLoop()
 
