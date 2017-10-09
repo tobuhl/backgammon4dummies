@@ -1,3 +1,5 @@
+last_point = 24  # use a const: do not change!
+
 class Points:
     def __init__(self):
         self.color = None
@@ -17,7 +19,8 @@ class Move:
         if diff < -6 or diff > 6:
             raise ValueError("Unvalid move: Source %d, Target: %d"
                              % (source, target))
-        if target > 24:
+        # moving a token exatly behind the board might be legal
+        if target > last_point + 1:
             raise ValueError("Unvalid move: Target %d"
                              ", violates board boundaries" % (target))
 
@@ -55,7 +58,7 @@ class State:
     def __init__(self, state_array, current_player, current_opponent):
         """ This class represents the state of a backgammon game """
         if state_array is None:
-            self.tokens = [Points() for x in range(25)]
+            self.tokens = [Points() for x in range(26)]
             # [[0 for y in range(2)] for x in range(25)]
             # self.tokens[1].color = 'black'  # only for testing
         else:
@@ -154,11 +157,30 @@ class State:
         >>> st1. proposed_move_valid(mv)
         Invalid move: Player tries to move opponents or no token.
         False
+        >>> st2 = State(None, p1, p2)
+        >>> st2.set_token(23, 2, 'white')
+        >>> mv = Move(23, 25)
+        >>> st2.proposed_move_valid(mv)
+        True
+        >>> st2.set_token(1, 1, 'white')
+        >>> st2.proposed_move_valid(mv)
+        Invalid move: Player tries to move beyond the board.
+        False
 
         """
         if self.current_player.color != self.tokens[move.source].color:
             print("Invalid move: Player tries to move opponents or no token.")
             return False
+        # check, if all tokens are in the last quadrant
+        # if so, moving a token to point 25 is legal.
+        no_tokens_out_of_last_quadrant = True
+        for i in range(18):
+            if self.tokens[i].count > 0:
+                no_tokens_out_of_last_quadrant = False
+                break
+        if no_tokens_out_of_last_quadrant \
+           and move.target == last_point + 1:
+            return True
         if self.tokens[move.source].color != self.tokens[move.target].color \
            and self.tokens[move.target].count > 1:
             print("Invalid move: Player tries kick multiple opponents tokens.")
@@ -167,7 +189,7 @@ class State:
            and self.tokens[move.target].count > 4:
             print("Invalid move: Player tries to move to a full house.")
             return False
-        if move.target > 24:  # or 25?? anyway, redundant information...
+        if move.target > last_point:
             print("Invalid move: Player tries to move beyond the board.")
             return False
         # otherwise, move is valid
