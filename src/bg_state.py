@@ -27,8 +27,8 @@ class Player:
         """
         This class represents a player
 
-        >>> p1 = player("Tom", 'white')
-        >>> p2 = player("Bobby", 'black')
+        >>> p1 = Player("Tom", 'white')
+        >>> p2 = Player("Bobby", 'black')
         """
         def enum(**named_values):
             return type('Enum', (), named_values)
@@ -44,7 +44,7 @@ class Player:
         r"""
         Returns printable state of a player
 
-        >>> p1 = player("Tom", 'white')
+        >>> p1 = Player("Tom", 'white')
         >>> p1.get_state()
         'Tom\twhite\t0'
         """
@@ -71,9 +71,9 @@ class State:
         """
         Places 'count' token of 'color' @ 'point'
 
-        >>> p1 = player("Tom", 'white')
-        >>> p2 = player("Bobby", 'black')
-        >>> st1 = state(None, p1, p2)
+        >>> p1 = Player("Tom", 'white')
+        >>> p2 = Player("Bobby", 'black')
+        >>> st1 = State(None, p1, p2)
         >>> st1.set_token(1, 1, 'black')
         """
         self.tokens[point].count = count
@@ -83,11 +83,11 @@ class State:
         r"""
         Returns a state
 
-        >>> p1 = player("Tom", 'white')
-        >>> p2 = player("Bobby", 'black')
-        >>> st1 = state(None, p1, p2)
+        >>> p1 = Player("Tom", 'white')
+        >>> p2 = Player("Bobby", 'black')
+        >>> st1 = State(None, p1, p2)
         >>> st1.set_token(1, 1, 'white')
-        >>> mv = move(1, 4)
+        >>> mv = Move(1, 4)
         >>> st1.proposed_move_valid(mv)
         True
         >>> st1.change_state(mv, p1, p2)
@@ -108,11 +108,11 @@ class State:
         Executes a move
         User must check validity of move first by calling proposed_move_valid()
 
-        >>> p1 = player("Tom", 'white')
-        >>> p2 = player("Bobby", 'black')
-        >>> st1 = state(None, p1, p2)
+        >>> p1 = Player("Tom", 'white')
+        >>> p2 = Player("Bobby", 'black')
+        >>> st1 = State(None, p1, p2)
         >>> st1.set_token(1, 1, 'white')
-        >>> mv = move(1, 5)
+        >>> mv = Move(1, 5)
         >>> st1.proposed_move_valid(mv)
         True
         >>> st1.change_state(mv, p1, p2)
@@ -143,14 +143,14 @@ class State:
         3. The current player tries to move a token, that does not belong to
             him.
 
-        >>> p1 = player("Tom", 'white')
-        >>> p2 = player("Bobby", 'black')
-        >>> st1 = state(None, p1, p2)
+        >>> p1 = Player("Tom", 'white')
+        >>> p2 = Player("Bobby", 'black')
+        >>> st1 = State(None, p1, p2)
         >>> st1.set_token(1, 1, 'white')
-        >>> mv = move(1, 5)
+        >>> mv = Move(1, 5)
         >>> st1.proposed_move_valid(mv)
         True
-        >>> mv = move(2, 5)
+        >>> mv = Move(2, 5)
         >>> st1. proposed_move_valid(mv)
         Invalid move: Player tries to move opponents or no token.
         False
@@ -167,7 +167,7 @@ class State:
            and self.tokens[move.target].count > 4:
             print("Invalid move: Player tries to move to a full house.")
             return False
-        if move.target > 24:
+        if move.target > 24:  # or 25?? anyway, redundant information...
             print("Invalid move: Player tries to move beyond the board.")
             return False
         # otherwise, move is valid
