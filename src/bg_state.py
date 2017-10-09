@@ -66,7 +66,7 @@ class State:
             # self.tokens[1].color = 'black'  # only for testing
         else:
             self.tokens = state_array
-        self.dice_roll = [0] * 2
+        # self.dice_roll = [0] * 2
         if current_player == current_opponent:
             raise ValueError("Current Player and current opponent cannot be"
                              "equal.")
@@ -162,18 +162,23 @@ class State:
         >>> p2 = Player("Bobby", 'black')
         >>> st1 = State(None, p1, p2)
         >>> st1.set_token(1, 1, 'white')
+
         >>> mv = Move(1, 5)
         >>> st1.proposed_move_valid(mv)
         True
+
         >>> mv = Move(2, 5)
         >>> st1. proposed_move_valid(mv)
-        Invalid move: Player tries to move opponents or no token.
+        Invalid move: Player tries to move opponent's or no token.
         False
+
         >>> st2 = State(None, p1, p2)
         >>> st2.set_token(23, 2, 'white')
+
         >>> mv = Move(23, 25)
         >>> st2.proposed_move_valid(mv)
         True
+
         >>> st2.set_token(1, 1, 'white')
         >>> st2.proposed_move_valid(mv)
         Invalid move: Player tries to move beyond the board.
@@ -186,11 +191,13 @@ class State:
         if self.current_player.color == 'black':
             if self.current_player.kicked_tokens > 0 and move.source != 25:
                 return False
-        if self.current_player.color != self.tokens[move.source].color:
-            print("Invalid move: Player tries to move opponents or no token.")
+        if self.current_player.color != self.tokens[move.source].color \
+           and (move.source != 0 and move.source != 25):
+            print("Invalid move: Player tries to move opponent's or no token.")
             return False
         # check, if all tokens are in the last quadrant
-        # if so, moving a token to point 25 is legal.
+        # if so, moving a token to point 0 or 25 is legal for white or black
+        # player respectively.
         no_tokens_out_of_last_quadrant = True
         if self.tokens[move.source].color == 'white':
             for i in range(18):
@@ -225,6 +232,40 @@ class State:
     def check_final_state(self, current_player):
         """
         Checks, if current_player has won. Call after move is done.
+
+        >>> p1 = Player("Tom", 'white')
+        >>> p2 = Player("Bobby", 'black')
+        >>> st1 = State(None, p1, p2)
+        >>> st1.check_final_state(p1)
+        True
+        >>> p1.kicked_tokens = 1
+        >>> st1.check_final_state(p1)
+        False
+        >>> mv = Move(0, 1)
+        >>> st1.proposed_move_valid(mv)
+        True
+        >>> st1.check_final_state(p1)
+        False
+        >>> st1.change_state(mv, p1, p2)
+        >>> mv = Move(1, 7)
+        >>> st1.proposed_move_valid(mv)
+        True
+        >>> st1.change_state(mv, p1, p2)
+        >>> mv = Move(7, 13)
+        >>> st1.proposed_move_valid(mv)
+        True
+        >>> st1.change_state(mv, p1, p2)
+        >>> mv = Move(13, 19)
+        >>> st1.proposed_move_valid(mv)
+        True
+        >>> st1.change_state(mv, p1, p2)
+        >>> mv = Move(19, 25)
+        >>> st1.proposed_move_valid(mv)
+        True
+        >>> st1.change_state(mv, p1, p2)
+
+        >>> st1.check_final_state(p1)
+        True
         """
         if current_player.kicked_tokens > 0:
             return False
