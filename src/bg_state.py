@@ -167,8 +167,27 @@ class State:
            and self.tokens[move.target].count > 4:
             print("Invalid move: Player tries to move to a full house.")
             return False
-        if move.target > 24:
+        if move.target > 24:  # or 25?? anyway, redundant information...
             print("Invalid move: Player tries to move beyond the board.")
             return False
         # otherwise, move is valid
         return True
+
+
+import random
+
+class two_dices:
+    def __init__(self):
+        ...
+
+    def roll_single_dice(self):
+        return random.randint(1, 6)
+
+    def roll_dices(self):
+        """
+        Roll two dices
+
+        >>> d1 = two_dices()
+        >>> d1.roll_dices()
+        """
+        return self.roll_single_dice(), self.roll_single_dice()
