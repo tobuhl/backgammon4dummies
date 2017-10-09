@@ -70,13 +70,45 @@ def processLoop():
     #TODO
     #show main window
 
+    
 
+
+    #PLAY!!!!!!!!!!!!!!!!!!!! TODO
+
+    #temporay simulation#############################################################
+
+    #p1 begins
+
+    #roll dices returns -> 2,4
+    m1a = Move(11,14)
+    m1b = Move(14,18)
+
+    print(game.currentState)
+
+    if game.currentState.proposed_move_valid(m1a):
+        game.currentState.change_state(m1a, game.player1, game.player2) 
+    
+    print("---------------------------------------")
+
+    print(game.currentState)
+
+    ################################################################################
+
+    winnerName = p1Name #TODO
+
+    l.log("g","processLoop(): game finished")
+
+    #show winner window
+    winnerWindow = WinnerWindow(winnerName)
+    application.exec_()
+
+    l.log("g","processLoop(): winner is " + winnerName)
 
     #TODO
-    #show winner window
+    #check whether user wants to play again 
     
-    l.log("g","processLoop(): killed")
-    l.log("g","\n\n\n")
+
+    l.log("g","processLoop(): killed  \n\n\n")
 
 processLoop()
 

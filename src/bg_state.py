@@ -9,6 +9,9 @@ class Points:
         self.color = color
         self.count = count
 
+    def __str__(self):
+        return str(self.count) + "[" + str(self.color) + "]" 
+
 
 class Move:
     def __init__(self, source, target):
@@ -237,3 +240,13 @@ class State:
                     no_tokens_left = False
                     break
         return no_tokens_left
+
+    def __str__(self):
+        strOutput = " "
+        fieldNr = 0
+        for p in self.tokens:
+            strOutput += str(fieldNr) + ":\t" + str(p) + "\n"
+            fieldNr += 1        
+        return strOutput 
+
+
