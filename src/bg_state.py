@@ -24,6 +24,9 @@ class Move:
             raise ValueError("Unvalid move: Target %d"
                              ", violates board boundaries" % (target))
 
+def enum(**named_values):
+    return type('Enum', (), named_values)
+Color = enum(Black='black', White='white')
 
 class Player:
     def __init__(self, name, color):
@@ -33,10 +36,7 @@ class Player:
         >>> p1 = Player("Tom", 'white')
         >>> p2 = Player("Bobby", 'black')
         """
-        def enum(**named_values):
-            return type('Enum', (), named_values)
 
-        Color = enum(Black='black', White='white')
         if color not in Color.Black and color not in Color.White:
             raise ValueError('color not valid')
         self.color = color
@@ -128,6 +128,10 @@ class State:
             current_opponent.kicked_tokens += 1
         if self.tokens[move.target].color != current_player.color:
             self.tokens[move.target].color = current_player.color
+        if current_player.color == 'white' and move.source == 0:
+            current_player.kicked_tokens -= 1
+        if current_player.color == 'black' and move.source == 25:
+            current_player.kicked_tokens -= 1
 
         self.set_current_roles(current_player, current_opponent)
 
@@ -143,8 +147,13 @@ class State:
             a. more than 4 tokens with the same color
             b. more than one tokens with the other color
         2. The move violates board boundaries (i.e. moves beyond the end)
+            a. if not all tokens are in the last quadrant, the move is not valid
+            b. if all tokens are in the last quadrant, a move of more than
+               one point behind the board boundary is not valid.
         3. The current player tries to move a token, that does not belong to
             him.
+        4. The player tries to move tokens which are not kicked, while having
+           kicked tokens
 
         >>> p1 = Player("Tom", 'white')
         >>> p2 = Player("Bobby", 'black')
@@ -168,19 +177,34 @@ class State:
         False
 
         """
+        if self.current_player.color == 'white':
+            if self.current_player.kicked_tokens > 0 and move.source != 0:
+                return False
+        if self.current_player.color == 'black':
+            if self.current_player.kicked_tokens > 0 and move.source != 25:
+                return False
         if self.current_player.color != self.tokens[move.source].color:
             print("Invalid move: Player tries to move opponents or no token.")
             return False
         # check, if all tokens are in the last quadrant
         # if so, moving a token to point 25 is legal.
         no_tokens_out_of_last_quadrant = True
-        for i in range(18):
-            if self.tokens[i].count > 0:
-                no_tokens_out_of_last_quadrant = False
-                break
-        if no_tokens_out_of_last_quadrant \
-           and move.target == last_point + 1:
-            return True
+        if self.tokens[move.source].color == 'white':
+            for i in range(18):
+                if self.tokens[i].count > 0:
+                    no_tokens_out_of_last_quadrant = False
+                    break
+            if no_tokens_out_of_last_quadrant \
+               and move.target == last_point + 1:
+                return True
+        if self.tokens[move.source].color == 'black':
+            for i in range(6, 24):
+                if self.tokens[i].count > 0:
+                    no_tokens_out_of_last_quadrant = False
+                    break
+            if no_tokens_out_of_last_quadrant \
+               and move.target == 0:
+                return True
         if self.tokens[move.source].color != self.tokens[move.target].color \
            and self.tokens[move.target].count > 1:
             print("Invalid move: Player tries kick multiple opponents tokens.")
@@ -194,3 +218,18 @@ class State:
             return False
         # otherwise, move is valid
         return True
+
+    def check_final_state(self, current_player):
+        """
+        Checks, if current_player has won. Call after move is done.
+        """
+        no_tokens_left = True
+        if current_player.color == 'white':
+            for i in range(25):
+                if self.tokens[i].color == current_player.color:
+                    no_tokens_left = False
+        if current_player.color == 'black':
+            for i in range(1, 26):
+                if self.tokens[i].color == current_player.color:
+                    no_tokens_left = False
+        return no_tokens_left
