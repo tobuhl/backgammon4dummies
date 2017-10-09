@@ -223,13 +223,17 @@ class State:
         """
         Checks, if current_player has won. Call after move is done.
         """
+        if current_player.kicked_tokens > 0:
+            return False
         no_tokens_left = True
         if current_player.color == 'white':
             for i in range(25):
                 if self.tokens[i].color == current_player.color:
                     no_tokens_left = False
+                    break
         if current_player.color == 'black':
             for i in range(1, 26):
                 if self.tokens[i].color == current_player.color:
                     no_tokens_left = False
+                    break
         return no_tokens_left
