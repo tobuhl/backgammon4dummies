@@ -10,7 +10,7 @@ class Points:
         self.count = count
 
     def __str__(self):
-        return str(self.count) + "[" + str(self.color) + "]" 
+        return str(self.count) + "[" + str(self.color) + "]"
 
 
 class Move:
@@ -123,9 +123,6 @@ class State:
         True
         >>> st1.change_state(mv, p1, p2)
         """
-        self.tokens[move.source].count -= 1
-        if self.tokens[move.source].count == 0:
-            self.tokens[move.source].color = None
         self.tokens[move.target].count += 1
         if self.tokens[move.target].color != current_opponent:
             current_opponent.kicked_tokens += 1
@@ -133,8 +130,12 @@ class State:
             self.tokens[move.target].color = current_player.color
         if current_player.color == 'white' and move.source == 0:
             current_player.kicked_tokens -= 1
-        if current_player.color == 'black' and move.source == 25:
+        elif current_player.color == 'black' and move.source == 25:
             current_player.kicked_tokens -= 1
+        else:
+            self.tokens[move.source].count -= 1
+        if self.tokens[move.source].count == 0:
+            self.tokens[move.source].color = None
 
         self.set_current_roles(current_player, current_opponent)
 
@@ -283,11 +284,27 @@ class State:
         return no_tokens_left
 
     def __str__(self):
+        r"""
+        >>> p1 = Player("Tom", 'white')
+        >>> p2 = Player("Bobby", 'black')
+        >>> st1 = State(None, p1, p2)
+        >>> st1.check_final_state(p1)
+        True
+        >>> p1.kicked_tokens = 1
+        >>> st1.check_final_state(p1)
+        False
+        >>> mv = Move(0, 1)
+        >>> st1.proposed_move_valid(mv)
+        True
+        >>> st1.check_final_state(p1)
+        False
+        >>> st1.change_state(mv, p1, p2)
+        >>> st1.__str__()[:57]
+        ' 0:\t0[None]\n1:\t1[white]\n2:\t0[None]\n3:\t0[None]\n4:\t0[None]\n'
+        """
         strOutput = " "
         fieldNr = 0
         for p in self.tokens:
             strOutput += str(fieldNr) + ":\t" + str(p) + "\n"
-            fieldNr += 1        
-        return strOutput 
-
-
+            fieldNr += 1
+        return strOutput
