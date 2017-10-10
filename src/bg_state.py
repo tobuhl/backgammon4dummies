@@ -1,4 +1,4 @@
-last_point = 24  # use a const: do not change!
+last_point = 24  # use as a const: do not change!
 
 class Points:
     def __init__(self):
@@ -23,7 +23,7 @@ class Move:
             raise ValueError("Unvalid move: Source %d, Target: %d"
                              % (source, target))
         # moving a token exatly behind the board might be legal
-        if target > last_point + 1:
+        if 0 > target > last_point + 1:
             raise ValueError("Unvalid move: Target %d"
                              ", violates board boundaries" % (target))
 
@@ -74,13 +74,15 @@ class State:
         self.current_opponent = current_opponent
 
     def set_token(self, point, count, color):
-        """
+        r"""
         Places 'count' token of 'color' @ 'point'
 
         >>> p1 = Player("Tom", 'white')
         >>> p2 = Player("Bobby", 'black')
         >>> st1 = State(None, p1, p2)
         >>> st1.set_token(1, 1, 'black')
+        >>> st1.get_state()[:45]
+        '0, 0, None\n1, 1, black\n2, 0, None\n3, 0, None\n'
         """
         self.tokens[point].count = count
         self.tokens[point].color = color
@@ -185,6 +187,15 @@ class State:
         Invalid move: Player tries to move beyond the board.
         False
 
+        >>> st2.set_token(2, 1, 'black')
+        >>> st2.set_current_roles(p2, p1)
+        >>> mv = Move(2, 0)
+        >>> st2.proposed_move_valid(mv)
+        True
+        >>> st2.set_token(20, 1, 'black')
+        >>> st2.proposed_move_valid(mv)
+        Invalid move: Player tries to move beyond the board.
+        False
         """
         if self.current_player.color == 'white':
             if self.current_player.kicked_tokens > 0 and move.source != 0:
@@ -201,30 +212,31 @@ class State:
         # player respectively.
         no_tokens_out_of_last_quadrant = True
         if self.tokens[move.source].color == 'white':
-            for i in range(18):
-                if self.tokens[i].count > 0:
+            for i in range(1, 19):
+                if self.tokens[i].count > 0 and self.tokens[i].color == 'white':
                     no_tokens_out_of_last_quadrant = False
                     break
-            if no_tokens_out_of_last_quadrant \
-               and move.target == last_point + 1:
+            if no_tokens_out_of_last_quadrant and move.target == last_point + 1:
+                # print("Valid move: White tokens only in last quadrant.")
                 return True
         if self.tokens[move.source].color == 'black':
-            for i in range(6, 24):
-                if self.tokens[i].count > 0:
+            for i in range(7, 25):
+                if self.tokens[i].count > 0 and self.tokens[i].color == 'black':
                     no_tokens_out_of_last_quadrant = False
                     break
-            if no_tokens_out_of_last_quadrant \
-               and move.target == 0:
+            if no_tokens_out_of_last_quadrant and move.target == 0:
+                # print("Valid move: Black tokens only in last quadrant.")
                 return True
         if self.tokens[move.source].color != self.tokens[move.target].color \
            and self.tokens[move.target].count > 1:
-            print("Invalid move: Player tries kick multiple opponents tokens.")
+            print("Invalid move: "
+                  "Player tries to kick multiple opponent's tokens.")
             return False
         if self.tokens[move.source].color == self.tokens[move.target].color \
            and self.tokens[move.target].count > 4:
             print("Invalid move: Player tries to move to a full house.")
             return False
-        if move.target > last_point:
+        if move.target > last_point or move.target < 1:
             print("Invalid move: Player tries to move beyond the board.")
             return False
         # otherwise, move is valid
@@ -291,18 +303,15 @@ class State:
         >>> st1.check_final_state(p1)
         True
         >>> p1.kicked_tokens = 1
-        >>> st1.check_final_state(p1)
-        False
         >>> mv = Move(0, 1)
         >>> st1.proposed_move_valid(mv)
         True
-        >>> st1.check_final_state(p1)
-        False
+
         >>> st1.change_state(mv, p1, p2)
-        >>> st1.__str__()[:57]
-        ' 0:\t0[None]\n1:\t1[white]\n2:\t0[None]\n3:\t0[None]\n4:\t0[None]\n'
+        >>> st1.__str__()[:56]
+        '0:\t0[None]\n1:\t1[white]\n2:\t0[None]\n3:\t0[None]\n4:\t0[None]\n'
         """
-        strOutput = " "
+        strOutput = ""
         fieldNr = 0
         for p in self.tokens:
             strOutput += str(fieldNr) + ":\t" + str(p) + "\n"
