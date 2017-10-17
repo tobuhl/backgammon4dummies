@@ -49,7 +49,9 @@ Implementation
 Design Patterns
 ===============
 
-For architecture of a software, a design pattern should be found. (controller, modell, view).
+For architecture of a structured software, design patterns should be used.
+
+model-view-controller:
 * view
   * GUI
 * model
@@ -57,3 +59,23 @@ For architecture of a software, a design pattern should be found. (controller, m
 * controller
   * main
   * etc.
+
+singleton:
+* game
+
+TODOs
+=====
+* GUI:
+  We need the functionality of closing the current window when a button (OK, Cancel) is clicked.
+  * GameModeWindow: 
+    * add the members okClicked,cancelClicked which are initially false and set true when the certain button is clicked
+    * add the members p1Mode, p2Mode which are initially "human" and set to the respective value due to the radio button state
+  * PlayerModeWindow: 
+    * add the members okClicked,cancelClicked which are initially false and set true when the certain button is clicked
+    * add the members p1Name,p2Name which represents the names and set to the values in the text boxes
+    * add the members p1Color,p2Color which are the colors ("black", "white") of the players
+  * WinnerWindow: 
+    * add the members okClicked,cancelClicked which are initially false and set true when the certain button is clicked
+
+
+
