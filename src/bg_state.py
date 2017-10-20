@@ -71,7 +71,7 @@ class State:
             raise ValueError("Current Player and current opponent cannot be"
                              "equal.")
         self.current_player = current_player
-        self.current_opponent = current_opponent
+        self.current_opponent = current_opponent      
 
     def set_token(self, point, count, color):
         r"""
@@ -317,3 +317,29 @@ class State:
             strOutput += str(fieldNr) + ":\t" + str(p) + "\n"
             fieldNr += 1
         return strOutput
+
+    def difference(self, oldState):
+        if self.tokens is None:
+            raise ValueError("Error: Tokens not initialized!")
+
+        if oldState is None:
+            raise ValueError("Error: oldState not initialized!")
+
+        if oldState.tokens is None:
+            raise ValueError("Error: oldState.tokens not initialized!")
+
+        strOutput = ""
+        thisFieldNr = 0        
+        for thisPoint in self.tokens:
+            thatFieldNr = 0
+            for thatPoint in oldState.tokens:
+                if thisFieldNr==thatFieldNr:
+                    if thisPoint.color != thatPoint.color or thisPoint.count != thatPoint.count:                
+                        strOutput += str(thisFieldNr) + ":\t" + str(thisPoint) + " CHANGED\n"  
+                    else:
+                        strOutput += str(thisFieldNr) + ":\t" + str(thisPoint) + "\n"
+                thatFieldNr += 1
+            thisFieldNr += 1
+        return strOutput
+
+

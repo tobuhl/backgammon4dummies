@@ -1,6 +1,7 @@
 #main.py
 
 import os
+import copy
 from game import *
 from logger import *
 from GUI import *
@@ -75,6 +76,8 @@ def processLoop():
 
     #PLAY!!!!!!!!!!!!!!!!!!!! TODO
 
+
+
     #temporay simulation#############################################################
 
     #p1 begins
@@ -83,17 +86,29 @@ def processLoop():
     m1a = Move(11,14)
     m1b = Move(14,18)
 
-    print(game.currentState)
+
+    print("-------------------state1--------------------")
+    state1 = copy.deepcopy(game.currentState)
+    print(state1)
 
     if game.currentState.proposed_move_valid(m1a):
         game.currentState.change_state(m1a, game.player1, game.player2) 
         game.currentState.change_state(m1a, game.player2, game.player1)  #error -> should not be possible 
     
-    print("---------------------------------------")
+    state2 = copy.deepcopy(game.currentState)
 
-    print(game.currentState)
+
+    print("-------------------state2--------------------")
+    print(state2)
+
+    print("----------------difference-----------------------")
+    print(state1.difference(state2))
+    
 
     ################################################################################
+
+
+
 
     winnerName = p1Name #TODO
 
