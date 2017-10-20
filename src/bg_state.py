@@ -126,7 +126,7 @@ class State:
         >>> st1.change_state(mv, p1, p2)
         """
         self.tokens[move.target].count += 1
-        if self.tokens[move.target].color != current_opponent:
+        if self.tokens[move.target].color != current_opponent: #what
             current_opponent.kicked_tokens += 1
         if self.tokens[move.target].color != current_player.color:
             self.tokens[move.target].color = current_player.color
@@ -335,9 +335,9 @@ class State:
             for thatPoint in oldState.tokens:
                 if thisFieldNr==thatFieldNr:
                     if thisPoint.color != thatPoint.color or thisPoint.count != thatPoint.count:                
-                        strOutput += str(thisFieldNr) + ":\t" + str(thisPoint) + " CHANGED\n"  
+                        strOutput += str(thisFieldNr) + ":\t" + str(thatPoint) + " CHANGED [" + str(thatPoint.count - thisPoint.count) + "]\n"  
                     else:
-                        strOutput += str(thisFieldNr) + ":\t" + str(thisPoint) + "\n"
+                        strOutput += str(thisFieldNr) + ":\t" + str(thatPoint) + "\n"
                 thatFieldNr += 1
             thisFieldNr += 1
         return strOutput

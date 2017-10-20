@@ -92,8 +92,9 @@ def processLoop():
     print(state1)
 
     if game.currentState.proposed_move_valid(m1a):
-        game.currentState.change_state(m1a, game.player1, game.player2) 
-        game.currentState.change_state(m1a, game.player2, game.player1)  #error -> should not be possible 
+        game.currentState.change_state(m1a, game.currentState.current_player, game.currentState.current_opponent)
+        #game.currentState.change_state(m1a, game.player1, game.player2) 
+        #game.currentState.change_state(m1a, game.player2, game.player1)  #error -> should not be possible 
     
     state2 = copy.deepcopy(game.currentState)
 
