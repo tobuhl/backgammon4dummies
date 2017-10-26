@@ -297,6 +297,10 @@ class State:
 
     def __str__(self):
         r"""
+        Returns a humanreadable string, can be printed with:
+
+        print(str(st1))
+
         >>> p1 = Player("Tom", 'white')
         >>> p2 = Player("Bobby", 'black')
         >>> st1 = State(None, p1, p2)
